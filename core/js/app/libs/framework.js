@@ -1,1 +1,0 @@
-define(['backbone','handlebars','text','domReady'], function(){});
