@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Organizer</title>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/base.css"/>
+        <script>
+            var require = {
+                // Root of all modules, from which all subsequent paths are based
+                "baseUrl": "js/", 
+
+                // Shortcuts from the baseUrl that can be uses to reference modules
+                "paths": {
+
+                    // Shorter name for the templates directory. Now, instead of 
+                    // requiring ['text!templates/someTemplate.html'], we can do
+                    // ['text!tpls/someTemplate.html']
+                    "tpls": "./templates",
+
+                    // Since we reference backbone, underscore, and handlebars so much, 
+                    // we create a reference straight to it. We can then depend on 
+                    // ['backbone'] instead of ['libs/backbone'].
+                    "underscore": "libs/underscore", 
+                    "backbone": "libs/backbone",
+                    "json2": "libs/json2", // json2, like underscore, is a dependecy of the Backbone library
+                    "handlebars": "libs/handlebars",
+
+                    // RequireJS plugins
+
+                    // The text plugin loads a dependency as plain text, rather than executing
+                    // it. We use it to load Handlebars templates from separate files
+                    // rather than storing them in the DOM as scripts. To use it, we prefix
+                    // the dependency declaration with 'text!'. For example, ['text!tpls/item.html'].
+                    "text": "libs/require/text", 
+
+                    // The domReady plugin provides an easy way to wait for the DOM to load
+                    // before executing the closure. For example, instead of 
+                    //  require(['endpoints/organizer/app'], function(App){
+                    //    $(document).ready(function(){
+                    //      App.datastore.items.reset(items);
+                    //      App.datastore.containers.reset(containers);              
+                    //      App.init();
+                    //    });
+                    //  });
+                    // We can use the domReady plugin. Adding it as a dependency forces
+                    // the callback to execute after the dependencies are loaded and the 
+                    // DOM is loaded.
+                    //  require([ 'domReady', 'endpoints/organizer/app'], function(domReady, App){
+                    //    domReady(function(){
+                    //      App.datastore.items.reset(items);
+                    //      App.datastore.containers.reset(containers);              
+                    //      App.init();
+                    //    });
+                    //  });
+                    // OR (but there are some gotchas. See http://requirejs.org/docs/api.html#pageload)
+                    //  require(['endpoints/organizer/app', 'domReady!'], function(App){
+                    //    App.datastore.items.reset(items);
+                    //    App.datastore.containers.reset(containers);              
+                    //    App.init();
+                    //  });
+                    "domReady": "libs/require/domReady"
+                }, 
+
+                // The Shim config lets us configure how we use scripts that aren't
+                // compatible with RequireJS's module system.
+                "shim": {
+
+                    // We use 'backbone' because we defined that shortcut in our
+                    // paths config.
+                    "backbone": {
+
+                        // These are the dependencies of the backbone library.
+                        // RequireJS will load them before Backbone
+                        "deps": ["underscore", "json2"], 
+
+                        // Backbone creates a global Backbone object which we want
+                        // to get when we require Backbone as a dependency. To do that,
+                        // tell RequireJS to export the global object to us.
+                        "exports": "Backbone"
+                    }, 
+
+                    "underscore": {
+                        // Like Backbone, we want the global Underscore object
+                        "exports": "_"
+                    }, 
+
+                    "handlebars": {
+                        // Like Backbone, we want the global Handlebars object
+                        "exports": "Handlebars"
+                    }
+                }
+            };
+        </script>     
+        <script src="js/libs/require/require.js"></script>   
+    </head>
+    <body>
+        <div class="wrapper">
+            <div role="main" class="main">
+                <ul class = "sortable root">
+
+                </ul>
+            </div>
+        </div>
+        <script src="js/libs/jquery-1.9.1.js"></script>
+        <script src="js/libs/bootstrap.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+        <script>            
+            var items = [
+                {"id":1,"name":"ball","position":1,"container_id":1,"category_id":null,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"},
+                {"id":2,"name":"toy","position":0,"container_id":2,"category_id":null,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"},
+                {"id":3,"name":"block","position":0,"container_id":3,"category_id":null,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"}
+            ];
+
+            var containers = [
+                {"id":1,"name":"a","position":0,"container_id":null,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"},
+                {"id":2,"name":"b","position":0,"container_id":1,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"},
+                {"id":3,"name":"c","position":1,"container_id":null,"user_id":1,"created_at":"2013-04-28 10:24:43","updated_at":"2013-04-28 10:24:43"}
+            ];
+
+            require(['domReady', 'endpoints/organizer/app'], function(domReady, App){
+                domReady(function(){
+                    // Bootstrap the data
+                    App.datastore.items.reset(items);
+                    App.datastore.containers.reset(containers);              
+                    App.init();
+                });
+            });
+        </script>
+    </body>
+</html>
